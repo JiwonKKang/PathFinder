@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  path-finder-redis:
+    container_name: path-finder-redis
+    build:
+      dockerfile: Dockerfile
+      context: ./redis
+    image: jiwonkkang/path-finder-redis
+    ports:
+      - "6379:6379"
+  path-finder-database:
+    container_name: path-finder-database
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: jiwonkkang/path-finder-database
+    environment:
+      - MARIADB_DATABASE=path-finder
+      - MARIADB_ROOT_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
