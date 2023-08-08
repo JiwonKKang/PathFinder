@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,11 +26,15 @@ public class DirectionService {
     private static final double RADIUS_KM = 10;
 
     public List<Direction> buildDirectionList(DocumentDto documentDto) {
+
+        if(Objects.isNull(documentDto)) return Collections.emptyList();
+
         return pharmacySearchService.searchPharmacyDtoList().stream().map(pharmacyDto ->
                         Direction.builder()
                                 .inputAddress(documentDto.getAddressName())
                                 .inputLatitude(documentDto.getLatitude())
                                 .inputLongitude(documentDto.getLongitude())
+                                .targetPharmacyName(pharmacyDto.getPharmacyName())
                                 .targetAddress(pharmacyDto.getPharmacyAddress())
                                 .targetLatitude(pharmacyDto.getLatitude())
                                 .targetLongitude(pharmacyDto.getLongitude())
