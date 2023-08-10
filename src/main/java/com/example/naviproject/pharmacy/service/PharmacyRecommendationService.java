@@ -3,6 +3,7 @@ package com.example.naviproject.pharmacy.service;
 import com.example.naviproject.api.dto.DocumentDto;
 import com.example.naviproject.api.dto.KakaoApiResponseDto;
 import com.example.naviproject.api.service.KakaoAddressSearchService;
+import com.example.naviproject.direction.dto.OutputDto;
 import com.example.naviproject.direction.entity.Direction;
 import com.example.naviproject.direction.service.DirectionService;
 import lombok.RequiredArgsConstructor;
@@ -25,21 +26,23 @@ public class PharmacyRecommendationService {
     private final KakaoAddressSearchService kakaoAddressSearchService;
     private final DirectionService directionService;
 
-    public void recommendPharmacyList(String address) {
+    public List<OutputDto> recommendPharmacyList(String address) {
 
         KakaoApiResponseDto kakaoApiResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
 
         if (Objects.isNull(kakaoApiResponseDto) || CollectionUtils.isEmpty(kakaoApiResponseDto.getDocumentDtoList())) {
             log.error("[PharmacyRecommendationService recommendPharmacyList fail] Input address: {}", address);
-            return;
+            return Collections.emptyList();
         }
 
         DocumentDto documentDto = kakaoApiResponseDto.getDocumentDtoList().get(0);
 
         List<Direction> directionList = directionService.buildDirectionList(documentDto);
+        log.info("directionList = {}", directionList);
 //        List<Direction> directions = directionService.buildDirectionListByCategoryApi(documentDto); 카테고리 검색 서비스
-        directionService.saveAll(directionList);
-
+        List<OutputDto> outputDtos = directionService.saveAll(directionList);
+        log.info("outputDto {}", outputDtos);
+        return outputDtos;
     }
 
 
