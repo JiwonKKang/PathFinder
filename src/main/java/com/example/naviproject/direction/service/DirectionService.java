@@ -2,6 +2,7 @@ package com.example.naviproject.direction.service;
 
 import com.example.naviproject.api.dto.DocumentDto;
 import com.example.naviproject.api.service.KakaoCategorySearchService;
+import com.example.naviproject.direction.dto.OutputDto;
 import com.example.naviproject.direction.repository.DirectionRepository;
 import com.example.naviproject.direction.entity.Direction;
 import com.example.naviproject.pharmacy.dto.PharmacyDto;
@@ -32,10 +33,12 @@ public class DirectionService {
 
 
     @Transactional
-    public List<Direction> saveAll(List<Direction> directionList) {
+    public List<OutputDto> saveAll(List<Direction> directionList) {
         if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
 
-        return directionRepository.saveAll(directionList);
+        return directionRepository.saveAll(directionList).stream()
+                .map(OutputDto::from)
+                .collect(Collectors.toList());
 
     }
 
