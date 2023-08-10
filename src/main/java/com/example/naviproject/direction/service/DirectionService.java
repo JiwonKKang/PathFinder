@@ -2,7 +2,7 @@ package com.example.naviproject.direction.service;
 
 import com.example.naviproject.api.dto.DocumentDto;
 import com.example.naviproject.api.service.KakaoCategorySearchService;
-import com.example.naviproject.direction.DirectionRepository;
+import com.example.naviproject.direction.repository.DirectionRepository;
 import com.example.naviproject.direction.entity.Direction;
 import com.example.naviproject.pharmacy.dto.PharmacyDto;
 import com.example.naviproject.pharmacy.service.PharmacySearchService;
@@ -77,7 +77,7 @@ public class DirectionService {
                                 .targetAddress(resultDocumentDto.getAddressName())
                                 .targetLatitude(resultDocumentDto.getLatitude())
                                 .targetLongitude(resultDocumentDto.getLongitude())
-                                .distance(resultDocumentDto.getDistance() * 0.001) // km 단위
+                                .distance(resultDocumentDto.getDistance() * 0.001) // km 단위Å
                                 .build())
                 .limit(MAX_SEARCH_COUNT)
                 .collect(Collectors.toList());
