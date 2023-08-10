@@ -1,4 +1,4 @@
-package com.example.naviproject.direction;
+package com.example.naviproject.direction.repository;
 
 
 import com.example.naviproject.direction.entity.Direction;

@@ -38,6 +38,7 @@ spring:
     show-sql: true
     database: mysql
 
+
 ---
 
 spring:
