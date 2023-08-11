@@ -38,6 +38,10 @@ spring:
     show-sql: true
     database: mysql
 
+pharmacy:
+  recommendation:
+    base:
+      url: http://localhost:8080/dir/
 
 ---
 

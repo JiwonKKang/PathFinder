@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -28,18 +30,28 @@ public class DirectionService {
     private final PharmacySearchService pharmacySearchService;
     private final DirectionRepository directionRepository;
     private final KakaoCategorySearchService kakaoCategorySearchService;
+    private final Base62Service base62Service;
+    private final static String DIRECTION_BASE_URL = "https://map.kakao.com/link/map/";
     private static final int MAX_SEARCH_COUNT = 3;
     private static final double RADIUS_KM = 10;
 
+    public String getUrlById(String encodedId) {
+        Long id =base62Service.decodedDirectionId(encodedId);
+        Direction direction = directionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("경로를 찾을 수 없습니다."));
+
+        String params = String.join(",", direction.getTargetPharmacyName(),
+                String.valueOf(direction.getTargetLatitude()), String.valueOf(direction.getTargetLongitude()));
+
+        String uri = UriComponentsBuilder.fromHttpUrl(DIRECTION_BASE_URL + params).toUriString();
+        log.info("params : {}, uri : {}", params, uri);
+        return uri;
+    }
 
     @Transactional
-    public List<OutputDto> saveAll(List<Direction> directionList) {
+    public List<Direction> saveAll(List<Direction> directionList) {
         if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
 
-        return directionRepository.saveAll(directionList).stream()
-                .map(OutputDto::from)
-                .collect(Collectors.toList());
-
+        return directionRepository.saveAll(directionList);
     }
 
     @Transactional(readOnly = true)
@@ -96,5 +108,4 @@ public class DirectionService {
         double earthRadius = 6371; //Kilometers
         return earthRadius * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon1 - lon2));
     }
-
 }
