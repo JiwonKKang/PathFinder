@@ -25,7 +25,7 @@ public class PharmacyController {
     public String saveRedis() {
         List<PharmacyDto> pharmacyDtoList = pharmacyRepositoryService.findAll().stream()
                 .map(PharmacyDto::from)
-                .toList();
+                .collect(Collectors.toList());
 
         pharmacyDtoList.forEach(pharmacyRedisTemplateService::save);
 
