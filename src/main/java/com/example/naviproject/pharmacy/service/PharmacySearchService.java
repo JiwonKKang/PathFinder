@@ -31,7 +31,5 @@ public class PharmacySearchService {
                     .collect(Collectors.toList());
         }
         return pharmacyDtoList;
-
     }
-
 }
